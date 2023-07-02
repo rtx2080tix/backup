@@ -21,3 +21,43 @@ fetch("https://i.pximg.net/img-master/img/2020/03/30/18/30/24/84479659_p0_master
 
 
 with({copy:copy})inputurl=window.location.href,myHeaders=new Headers,(async()=>{myHeaders=new Headers,myHeaders.append("referer","https://www.pixiv.net/"),requestOptions={method:"GET",headers:myHeaders,redirect:"follow"},await fetch(inputurl,requestOptions).then((e=>e.blob().then((e=>{reader=new FileReader,reader.readAsDataURL(e),reader.onloadend=function(){base64data=reader.result.replace(/data.*?base64,/,""),formData=new FormData,formData.append("image",base64data),formData.append("type","base64"),fetch("https://api.imgur.com/3/image",{method:"POST",headers:{Authorization:"Client-ID 90ef1830bd083ba"},body:formData}).then((e=>e.json())).then((e=>{copy(e.data.link),console.log(e.data.link)}))},image=new Image,image.src=URL.createObjectURL(e)}))))})();
+
+
+
+
+
+
+inputurl = prompt('enter the link');
+myHeaders = new Headers();
+(async () => {
+    myHeaders = new Headers();
+    myHeaders.append("referer", "https://www.pixiv.net/");
+
+    requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    await fetch(inputurl, requestOptions)
+        .then(res => res.blob().then(blob => {
+            reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = function () {
+                base64data = reader.result.replace(/data.*?base64,/, "");
+                formData = new FormData();
+                formData.append('image', base64data);
+                formData.append('type', 'base64')
+                fetch('https://api.imgur.com/3/image', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: 'Client-ID 90ef1830bd083ba',
+                    },
+                    body: formData
+                }).then(data => data.json()).then(data => {console.log(data.data.link)})
+            }
+            image = new Image();
+            image.src = URL.createObjectURL(blob);
+            document.body.appendChild(image);
+        }))
+})()
